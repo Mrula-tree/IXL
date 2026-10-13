@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Number Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fredoka:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F7FB;--grid:#DCE6F0;--ink:#1C2B4A;--ink-soft:#4E5D7A;--card:#FFFFFF;--line:#C9D6E3;
+  --hi:#FFD84D;--hi-ink:#3A2E00;--ok:#1F8A5B;--ok-bg:#E3F5EC;--bad:#B9343A;--bad-bg:#FCE9E9;
+  --focus:#2F6FEB;--kav:#2F6FEB;--vaa:#C2417A;--margin:#F2A7A7;
+  color-scheme:light;box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#16252A;--grid:#21353B;--ink:#EEF3EE;--ink-soft:#A9BAB6;--card:#1D2F35;--line:#354C52;
+    --hi:#FFD84D;--hi-ink:#3A2E00;--ok:#62D3A0;--ok-bg:#163A2C;--bad:#FF9196;--bad-bg:#3D1F23;
+    --focus:#86ADFF;--kav:#86ADFF;--vaa:#F28AB8;--margin:#7A3B3F;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#16252A;--grid:#21353B;--ink:#EEF3EE;--ink-soft:#A9BAB6;--card:#1D2F35;--line:#354C52;
+  --hi:#FFD84D;--hi-ink:#3A2E00;--ok:#62D3A0;--ok-bg:#163A2C;--bad:#FF9196;--bad-bg:#3D1F23;
+  --focus:#86ADFF;--kav:#86ADFF;--vaa:#F28AB8;--margin:#7A3B3F;color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{
+  margin:0;min-height:100vh;color:var(--ink);background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  font-family:"Atkinson Hyperlegible",Verdana,system-ui,sans-serif;font-size:17px;line-height:1.5;
+}
+h1,h2,h3,.disp{font-family:"Fredoka","Trebuchet MS",system-ui,sans-serif;margin:0;font-weight:600}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.wrap{max-width:960px;margin:0 auto;padding:16px 20px 48px}
+.top{display:flex;align-items:center;gap:12px;padding:14px 20px;max-width:960px;margin:0 auto}
+.brand{font-family:"Fredoka",system-ui,sans-serif;font-weight:700;font-size:22px;display:flex;align-items:center;gap:8px}
+.top .spacer{flex:1}
+.who{font-size:15px;color:var(--ink-soft)}
+.icon-btn{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:15px}
+.link-btn{background:none;border:none;padding:4px 0;color:var(--focus);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+/* Home */
+.hello{margin:28px 0 20px}
+.hello h1{font-size:clamp(30px,5vw,44px);line-height:1.1}
+.hello p{margin:8px 0 0;color:var(--ink-soft);max-width:60ch}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.person{
+  text-align:left;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:22px 22px 18px;
+  display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;
+}
+.person::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--c)}
+.person:hover{border-color:var(--c)}
+.person .nm{font-family:"Fredoka",system-ui,sans-serif;font-size:32px;font-weight:700;color:var(--c)}
+.person .meta{color:var(--ink-soft);font-size:15px}
+.parent-note{margin-top:28px;padding:16px 18px;border-left:4px solid var(--line);color:var(--ink-soft);font-size:15px;max-width:70ch;background:var(--card);border-radius:0 12px 12px 0}
+
+/* Skills */
+.skills-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:20px 0 8px}
+.skills-head h1{font-size:clamp(26px,4vw,36px)}
+.group{margin-top:22px}
+.group h2{font-size:19px;color:var(--ink-soft);font-weight:600;margin-bottom:8px}
+.skill{
+  width:100%;display:grid;grid-template-columns:1fr 150px 48px;align-items:center;gap:14px;text-align:left;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px;margin-bottom:8px;
+}
+.skill:hover{border-color:var(--c)}
+.skill .t{font-weight:700}
+.skill .s{font-size:14px;color:var(--ink-soft)}
+.mini{height:10px;background:var(--paper);border:1px solid var(--line);border-radius:5px;overflow:hidden}
+.mini i{display:block;height:100%;background:var(--hi)}
+.skill .pct{font-family:"Fredoka",system-ui,sans-serif;font-weight:600;text-align:right}
+.star{color:var(--ok)}
+@media (max-width:560px){.skill{grid-template-columns:1fr 70px 40px}}
+
+/* Practice */
+.p-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:14px 0 14px}
+.p-head h1{font-size:clamp(22px,3.6vw,30px)}
+.ruler-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 18px 10px;margin-bottom:16px}
+.ruler-top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.ruler-top .lbl{font-size:15px;color:var(--ink-soft)}
+.ruler-top .num{font-family:"Fredoka",system-ui,sans-serif;font-size:44px;font-weight:700;line-height:1}
+.ruler{position:relative;height:34px;margin-top:8px;border:2px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--paper)}
+.ruler .fill{position:absolute;left:0;top:0;bottom:0;background:var(--hi);transition:width .5s ease}
+.ruler .zone{position:absolute;right:0;top:0;bottom:0;width:10%;background:repeating-linear-gradient(45deg,transparent 0 5px,color-mix(in srgb,var(--ink) 14%,transparent) 5px 7px)}
+.ruler .ticks{position:absolute;inset:0;display:flex}
+.ruler .ticks span{flex:1;border-right:1px solid var(--ink);opacity:.35;position:relative}
+.ruler .ticks span:last-child{border-right:none}
+.ruler .ticks span::after{content:"";position:absolute;left:50%;bottom:0;height:35%;border-left:1px solid var(--ink)}
+.ruler-scale{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);margin-top:3px}
+.delta{font-family:"Fredoka",system-ui,sans-serif;font-weight:600;font-size:18px;margin-left:8px}
+.delta.up{color:var(--ok)}.delta.down{color:var(--bad)}
+.zone-note{font-size:14px;color:var(--ink-soft);margin-top:6px;min-height:21px}
+
+.p-grid{display:grid;grid-template-columns:1fr 220px;gap:16px;align-items:start}
+@media (max-width:760px){.p-grid{grid-template-columns:1fr}}
+.qcard{
+  background:var(--card);border:1px solid var(--line);border-radius:16px;padding:26px 26px 24px 46px;position:relative;min-height:260px;
+}
+.qcard::before{content:"";position:absolute;left:28px;top:0;bottom:0;border-left:2px solid var(--margin)}
+.q{font-size:clamp(22px,3.4vw,30px);line-height:1.35;margin-bottom:18px;font-family:"Atkinson Hyperlegible",Verdana,sans-serif}
+.q.big{font-size:clamp(28px,5vw,42px);font-weight:700}
+.q .sub{display:block;font-size:17px;color:var(--ink-soft);font-weight:400;margin-top:6px}
+.ans-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.ans{font-size:26px;width:min(240px,100%);padding:8px 12px;border:2px solid var(--ink);border-radius:10px;background:var(--paper)}
+.ans.err{border-color:var(--bad)}
+.go{background:var(--ink);color:var(--paper);border:none;border-radius:10px;padding:12px 22px;font-weight:700;font-size:18px}
+.choice{min-width:76px;font-size:28px;font-weight:700;padding:10px 18px;border:2px solid var(--ink);border-radius:12px;background:var(--paper)}
+.choice.word{font-size:20px}
+.hint{font-size:15px;color:var(--ink-soft);margin-top:10px;min-height:22px}
+.nudge{color:var(--bad);font-weight:700}
+.fb{margin-top:18px;border-radius:12px;padding:14px 16px}
+.fb.ok{background:var(--ok-bg);color:var(--ok);font-weight:700;font-size:20px}
+.fb.bad{background:var(--bad-bg)}
+.fb.bad h3{color:var(--bad);font-size:20px;margin-bottom:6px}
+.fb.bad .correct{font-size:22px;font-weight:700;margin:4px 0 10px;color:var(--ink)}
+.fb.bad ol{margin:0 0 12px;padding-left:22px}
+.fb.bad li{margin-bottom:4px}
+.side{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+.stat{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line)}
+.stat:last-child{border-bottom:none}
+.stat b{font-family:"Fredoka",system-ui,sans-serif;font-size:24px}
+.stat span{color:var(--ink-soft);font-size:15px}
+
+.overlay{position:fixed;inset:0;background:color-mix(in srgb,var(--paper) 88%,transparent);display:flex;align-items:center;justify-content:center;padding:24px;z-index:10}
+.overlay[hidden]{display:none}
+.panel{background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:26px;max-width:420px;width:100%;text-align:center}
+.panel h2{font-size:28px;margin-bottom:8px}
+.panel p{color:var(--ink-soft);margin:0 0 16px}
+.panel .count{font-family:"Fredoka",system-ui,sans-serif;font-size:56px;font-weight:700;margin:8px 0 16px}
+.mastered{text-align:center;padding:10px 0}
+.mastered .big{font-family:"Fredoka",system-ui,sans-serif;font-size:34px;font-weight:700;margin:6px 0}
+@media (prefers-reduced-motion:reduce){.ruler .fill{transition:none}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span aria-hidden="true">📐</span>Number Notebook</div>
+  <div class="spacer"></div>
+  <div class="who" id="who"></div>
+  <button class="icon-btn" id="themeBtn" type="button" aria-label="Switch between light and dark">Light / dark</button>
+</header>
+<main class="wrap" id="app"></main>
+
+<div class="overlay" id="breakOv" hidden role="dialog" aria-modal="true" aria-labelledby="brkT">
+  <div class="panel">
+    <h2 id="brkT">Break time</h2>
+    <p id="brkMsg">Great focus. Stand up, stretch, get some water.</p>
+    <div class="count" id="brkCount">5:00</div>
+    <button class="go" id="brkDone" type="button">I'm back</button>
+  </div>
+</div>
+
+<script>
+/* ---------- helpers ---------- */
+const R=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=a=>a[R(0,a.length-1)];
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a||1};
+const fmt=n=>n.toLocaleString('en-US');
+const money=n=>'$'+n.toFixed(2);
+const neg=n=>n<0?'(−'+Math.abs(n)+')':String(n);
+const sgn=n=>n<0?'−'+Math.abs(n):String(n);
+function simp(n,d){if(d<0){n=-n;d=-d}const g=gcd(n,d);return{n:n/g,d:d/g}}
+function fstr(n,d){const s=simp(n,d);return s.d===1?String(s.n):s.n+'/'+s.d}
+const round2=x=>Math.round(x*100+1e-9)/100;
+const lvl=s=>s<40?0:s<75?1:2;
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+
+/* ---------- question generators ---------- */
+const G={
+/* Vaagai, grade 4 */
+add(L){const d=[2,3,4][L];const a=R(10**(d-1),10**d-1),b=R(10**(d-1),10**d-1);
+ return{q:`${fmt(a)} + ${fmt(b)} = ?`,big:1,kind:'num',ans:a+b,
+ steps:[`Line up the numbers by place value: ones under ones, tens under tens.`,`Add the ones first. If a column adds up to 10 or more, carry 1 to the next column.`,`Keep going left: tens, then hundreds${d>3?', then thousands':''}.`,`${fmt(a)} + ${fmt(b)} = ${fmt(a+b)}`]}},
+sub(L){const d=[2,3,4][L];let a=R(10**(d-1)+10,10**d-1),b=R(10**(d-1),a-1);
+ return{q:`${fmt(a)} − ${fmt(b)} = ?`,big:1,kind:'num',ans:a-b,
+ steps:[`Line up the numbers by place value.`,`Start with the ones. If the top digit is smaller, borrow 10 from the next column.`,`Keep going left, column by column.`,`Check by adding back: ${fmt(a-b)} + ${fmt(b)} = ${fmt(a)}`]}},
+mulf(L){const m=[5,10,12][L];const a=R(2,m),b=R(2,m);
+ const sk=a<=6?Array.from({length:a},(_,i)=>b*(i+1)).join(', '):'';
+ return{q:`${a} × ${b} = ?`,big:1,kind:'num',ans:a*b,
+ steps:[`${a} × ${b} means ${a} groups of ${b}.`,sk?`Skip-count by ${b}, ${a} times: ${sk}.`:`Break it up: ${a} × ${b} = (${Math.floor(a/2)} × ${b}) + (${a-Math.floor(a/2)} × ${b}) = ${Math.floor(a/2)*b} + ${(a-Math.floor(a/2))*b}.`,`${a} × ${b} = ${a*b}`]}},
+divf(L){const m=[5,10,12][L];const b=R(2,m),q=R(2,m),a=b*q;
+ return{q:`${a} ÷ ${b} = ?`,big:1,kind:'num',ans:q,
+ steps:[`Division undoes multiplication. Ask: what number times ${b} makes ${a}?`,`${b} × ${q} = ${a}`,`So ${a} ÷ ${b} = ${q}`]}},
+round(L){const p=[10,100,1000][L];const n=[R(11,989),R(101,9899),R(1001,98999)][L];const ans=Math.round(n/p)*p;
+ const place=['tens','hundreds','thousands'][L],right=['ones','tens','hundreds'][L];
+ const dig=Math.floor(n/(p/10))%10;
+ return{q:`Round ${fmt(n)} to the nearest ${p===10?'ten':p===100?'hundred':'thousand'}.`,kind:'num',ans,
+ steps:[`Find the ${place} place, then look at the digit just to its right (the ${right} digit): ${dig}.`,dig>=5?`${dig} is 5 or more, so round up.`:`${dig} is less than 5, so round down.`,`${fmt(n)} rounds to ${fmt(ans)}`]}},
+place(L){const n=[R(1000,9999),R(10000,99999),R(100000,999999)][L];const s=String(n);
+ let i;do{i=R(0,s.length-1)}while(s[i]==='0');const pos=s.length-1-i,d=+s[i],val=d*10**pos;
+ const names=['ones','tens','hundreds','thousands','ten thousands','hundred thousands'];
+ let html='';for(let k=0;k<s.length;k++){if(k>0&&(s.length-k)%3===0)html+=',';html+=k===i?`<u style="text-decoration-thickness:3px;text-underline-offset:5px">${s[k]}</u>`:s[k]}
+ return{q:`What is the value of the underlined digit?<span class="sub" style="font-size:36px;color:var(--ink);font-weight:700">${html}</span>`,kind:'num',ans:val,
+ steps:[`The underlined ${d} is in the ${names[pos]} place.`,`Its value is ${d} × ${fmt(10**pos)} = ${fmt(val)}`]}},
+fcomp(L){let a,b,c,d;
+ if(L===0){b=R(3,12);a=R(1,b-1);c=R(1,b-1);d=b}
+ else if(L===1){a=R(1,6);b=R(a+1,12);d=R(a+1,12);c=a}
+ else{b=R(2,10);d=R(2,10);a=R(1,b-1);c=R(1,d-1);if(Math.random()<.2){const k=R(2,3);c=a*k;d=b*k}}
+ const l=a*d,r=c*b,ans=l<r?'<':l>r?'>':'=';
+ const steps=L===0?[`The denominators match (${b}), so compare the numerators: ${a} and ${c}.`,`${a} ${ans} ${c}, so ${a}/${b} ${ans} ${c}/${d}`]
+ :L===1&&a===c?[`The numerators match (${a}). Compare the denominators.`,`A bigger denominator means smaller pieces. ${b} vs ${d}.`,`So ${a}/${b} ${ans} ${c}/${d}`]
+ :[`Different denominators: cross-multiply.`,`${a} × ${d} = ${l} and ${c} × ${b} = ${r}.`,`${l} ${ans} ${r}, so ${a}/${b} ${ans} ${c}/${d}`];
+ return{q:`Which sign makes it true?<span class="sub" style="font-size:36px;color:var(--ink);font-weight:700">${a}/${b} &nbsp;?&nbsp; ${c}/${d}</span>`,kind:'choice',choices:['<','=','>'],ans,steps}},
+change(L){const cents=[R(105,480),R(110,980),R(210,1980)][L];const price=cents/100;const pay=[5,10,20][L];const ch=round2(pay-price);
+ return{q:`A snack costs ${money(price)}. You pay with a $${pay} bill. How much change do you get?`,kind:'money',ans:ch,
+ steps:[`Change = what you pay − the price.`,`$${pay}.00 − ${money(price)} = ${money(ch)}`,`Check by counting up: ${money(price)} + ${money(ch)} = $${pay}.00`]}},
+time(L){const h=R(1,10),m=[pick([0,15,30]),R(0,11)*5,R(0,11)*5][L];const dur=[pick([15,30,45]),R(2,11)*5,R(13,34)*5][L];
+ const t=h*60+m+dur;let eh=Math.floor(t/60)%12;if(eh===0)eh=12;const em=t%60;const end=`${eh}:${String(em).padStart(2,'0')}`;
+ const dh=Math.floor(dur/60),dm=dur%60;
+ return{q:`Practice starts at ${h}:${String(m).padStart(2,'0')} and lasts ${dh?dh+' hour'+(dh>1?'s ':' '):''}${dm?dm+' minutes':''}. What time does it end?`,kind:'time',ans:end,hintText:'Type it like 3:45',
+ steps:[`Start at ${h}:${String(m).padStart(2,'0')}.`,dh?`Add ${dh} hour${dh>1?'s':''} first.`:`Count the minutes forward.`,dm?`Then add ${dm} minutes. If the minutes pass 60, go to the next hour.`:'',`It ends at ${end}`].filter(Boolean)}},
+save(L){const s=[pick([2,5,10]),R(3,9),R(4,12)][L];const goal=L===0?s*R(3,8):R(15,90);const w=Math.ceil(goal/s);
+ return{q:`Vaagai saves $${s} every week. The art kit she wants costs $${goal}. How many weeks until she can buy it?`,kind:'num',ans:w,
+ steps:[`Divide the cost by the weekly savings: $${goal} ÷ $${s} = ${round2(goal/s)}.`,goal%s?`She can't buy it partway through a week, so round up to ${w} weeks.`:`It divides evenly: ${w} weeks.`,`Check: ${w} × $${s} = $${w*s}, which covers $${goal}.`]}},
+
+/* Kavin, grade 6 */
+mul(L){const [a,b]=[[R(12,99),R(3,9)],[R(12,99),R(11,99)],[R(102,999),R(11,99)]][L];
+ const t=b%10,te=b-t;
+ return{q:`${fmt(a)} × ${b} = ?`,big:1,kind:'num',ans:a*b,
+ steps:L===0?[`Break ${a} into tens and ones: ${a-a%10} + ${a%10}.`,`${a-a%10} × ${b} = ${(a-a%10)*b} and ${a%10} × ${b} = ${(a%10)*b}.`,`Add: ${(a-a%10)*b} + ${(a%10)*b} = ${fmt(a*b)}`]
+ :[`Split ${b} into ${te} + ${t}.`,`${fmt(a)} × ${t} = ${fmt(a*t)}`,`${fmt(a)} × ${te} = ${fmt(a*te)}`,`Add the partial products: ${fmt(a*t)} + ${fmt(a*te)} = ${fmt(a*b)}`]}},
+ldiv(L){const d=[R(3,9),R(11,25),R(12,48)][L],q=[R(12,99),R(12,99),R(21,250)][L],n=d*q;
+ return{q:`${fmt(n)} ÷ ${d} = ?`,big:1,kind:'num',ans:q,
+ steps:[`Ask how many ${d}s fit into the first part of ${fmt(n)}, write that digit, multiply, subtract, then bring down the next digit.`,`Repeat until every digit has been brought down.`,`Check: ${d} × ${q} = ${fmt(n)}`]}},
+ops(L){let q,ans,steps;
+ if(L===0){const a=R(2,20),b=R(2,9),c=R(2,9);ans=a+b*c;q=`${a} + ${b} × ${c}`;steps=[`Multiply before you add.`,`${b} × ${c} = ${b*c}`,`${a} + ${b*c} = ${ans}`]}
+ else if(L===1){const a=R(2,9),b=R(2,9),c=R(2,6),d=R(1,(a+b)*c-1);ans=(a+b)*c-d;q=`(${a} + ${b}) × ${c} − ${d}`;steps=[`Parentheses first: ${a} + ${b} = ${a+b}`,`Then multiply: ${a+b} × ${c} = ${(a+b)*c}`,`Then subtract: ${(a+b)*c} − ${d} = ${ans}`]}
+ else{const a=R(3,9),b=R(3,9),d=R(2,6),c=d*R(2,9),e=R(1,15);ans=a*b-c/d+e;q=`${a} × ${b} − ${c} ÷ ${d} + ${e}`;steps=[`Multiply and divide first, left to right: ${a} × ${b} = ${a*b} and ${c} ÷ ${d} = ${c/d}`,`Then add and subtract, left to right: ${a*b} − ${c/d} = ${a*b-c/d}`,`${a*b-c/d} + ${e} = ${ans}`]}
+ return{q:`${q} = ?`,big:1,kind:'num',ans,steps}},
+fadd(L){let a,b,c,d;
+ if(L===0){b=R(3,12);a=R(1,b-1);c=R(1,b-1);d=b}
+ else if(L===1){b=R(2,6);d=b*R(2,3);a=R(1,b-1);c=R(1,d-1)}
+ else{b=R(2,9);do{d=R(2,9)}while(d===b);a=R(1,b-1);c=R(1,d-1)}
+ let op=Math.random()<.4?'−':'+';if(op==='−'&&a*d<c*b){[a,b,c,d]=[c,d,a,b]}
+ const L2=b*d/gcd(b,d),n1=a*L2/b,n2=c*L2/d,n=op==='+'?n1+n2:n1-n2,ans=simp(n,L2);
+ return{q:`${a}/${b} ${op} ${c}/${d} = ?`,big:1,kind:'frac',ans,hintText:'Simplest form. Examples: 3/4, 7/5, 1 2/5, or 2',
+ steps:[b===d?`The denominators already match: ${b}.`:`Find a common denominator: ${L2}.`,b===d?`${op==='+'?'Add':'Subtract'} the numerators: ${a} ${op} ${c} = ${n}`:`Rewrite: ${a}/${b} = ${n1}/${L2} and ${c}/${d} = ${n2}/${L2}`,b===d?'':`${n1} ${op} ${n2} = ${n}, so the answer is ${n}/${L2}`,`Simplify: ${fstr(n,L2)}`].filter(Boolean)}},
+fmul(L){const b=R(2,[6,9,12][L]),d=R(2,[6,9,12][L]),a=R(1,b-1),c=R(1,L===2?d+3:d-1)||1;const ans=simp(a*c,b*d);
+ return{q:`${a}/${b} × ${c}/${d} = ?`,big:1,kind:'frac',ans,hintText:'Simplest form. Examples: 3/4, 7/5, or 2',
+ steps:[`Multiply the numerators: ${a} × ${c} = ${a*c}`,`Multiply the denominators: ${b} × ${d} = ${b*d}`,`Simplify ${a*c}/${b*d} = ${fstr(a*c,b*d)}`]}},
+dec(L){let q,ans,steps;
+ if(L===0){const a=R(11,99)/10,b=R(11,99)/10;ans=round2(a+b);q=`${a.toFixed(1)} + ${b.toFixed(1)}`;steps=[`Line up the decimal points.`,`Add as with whole numbers and keep the decimal point in place.`,`${a.toFixed(1)} + ${b.toFixed(1)} = ${ans}`]}
+ else if(L===1){const a=R(500,1999)/100,b=R(101,a*100-1)/100;ans=round2(a-b);q=`${a.toFixed(2)} − ${b.toFixed(2)}`;steps=[`Line up the decimal points.`,`Subtract column by column, borrowing when needed.`,`${a.toFixed(2)} − ${b.toFixed(2)} = ${ans.toFixed(2)}`]}
+ else{const a=R(11,99)/10,b=R(2,9);ans=round2(a*b);q=`${a.toFixed(1)} × ${b}`;steps=[`Ignore the decimal: ${Math.round(a*10)} × ${b} = ${Math.round(a*10)*b}`,`${a.toFixed(1)} has 1 decimal place, so the answer has 1 decimal place.`,`${a.toFixed(1)} × ${b} = ${ans}`]}
+ return{q:`${q} = ?`,big:1,kind:'num',ans,steps}},
+pct(L){const p=[pick([10,25,50]),pick([5,15,20,30,40,75]),R(2,19)*5][L],y=[R(2,20)*10,R(2,40)*20,R(4,80)*5][L];const ans=round2(y*p/100);
+ return{q:`What is ${p}% of ${y}?`,kind:'num',ans,
+ steps:[`${p}% means ${p} out of 100, or ${p/100}.`,`Tip: 10% of ${y} is ${round2(y/10)}.`,`${y} × ${p/100} = ${ans}`]}},
+tax(L){const price=[R(5,40),R(500,4999)/100,R(1000,8999)/100][L],rate=[pick([5,6,8,10]),pick([6,7,8]),pick([7.5,8.25,8.9])][L];
+ const t=round2(price*rate/100),tot=round2(price+t);
+ return{q:`Headphones cost ${money(price)}. Sales tax is ${rate}%. What is the total at checkout?`,kind:'money',ans:tot,
+ steps:[`Tax = price × ${rate}% = ${money(price)} × ${rate/100} = ${money(t)} (round to the nearest cent).`,`Total = price + tax = ${money(price)} + ${money(t)} = ${money(tot)}`]}},
+rate(L){const n=R(2,6),u=[R(1,9)*100,R(3,19)*5,R(15,95)][L]/100,m=R(n+1,12);const c=round2(n*u),ans=round2(m*u);
+ return{q:`${n} notebooks cost ${money(c)}. At the same price, how much do ${m} notebooks cost?`,kind:'money',ans,
+ steps:[`Find the price of one: ${money(c)} ÷ ${n} = ${money(u)}`,`Multiply by ${m}: ${money(u)} × ${m} = ${money(ans)}`]}},
+ints(L){let q,ans,steps;
+ if(L===0){const a=R(-12,12)||5,b=R(-12,-1);ans=a+b;q=`${sgn(a)} + ${neg(b)}`;steps=[`Adding a negative is the same as subtracting.`,`${sgn(a)} − ${Math.abs(b)} = ${sgn(ans)}`]}
+ else if(L===1){const a=R(-15,15)||-4,b=R(-15,-1);ans=a-b;q=`${sgn(a)} − ${neg(b)}`;steps=[`Subtracting a negative is the same as adding.`,`${sgn(a)} + ${Math.abs(b)} = ${sgn(ans)}`]}
+ else{const a=R(2,12)*pick([-1,1]),b=R(2,12)*pick([-1,1]);if(Math.random()<.5){ans=a*b;q=`${sgn(a)} × ${neg(b)}`}else{const p=a*b;ans=a;q=`${sgn(p)} ÷ ${neg(b)}`}
+  steps=[`Same signs give a positive answer. Different signs give a negative answer.`,`So the answer is ${sgn(ans)}`]}
+ return{q:`${q} = ?`,big:1,kind:'num',ans,hintText:'Use - for negative numbers',steps}},
+eq(L){const x=L===2?R(-12,15)||3:R(2,20),a=R(2,12);const f=pick(L===0?['add','sub']:['add','sub','mul','div']);let q,steps;
+ if(f==='add'){q=`x + ${a} = ${sgn(x+a)}`;steps=[`Undo the + ${a} by subtracting ${a} from both sides.`,`x = ${sgn(x+a)} − ${a} = ${sgn(x)}`]}
+ else if(f==='sub'){q=`x − ${a} = ${sgn(x-a)}`;steps=[`Undo the − ${a} by adding ${a} to both sides.`,`x = ${sgn(x-a)} + ${a} = ${sgn(x)}`]}
+ else if(f==='mul'){q=`${a}x = ${sgn(a*x)}`;steps=[`${a}x means ${a} × x. Undo it by dividing both sides by ${a}.`,`x = ${sgn(a*x)} ÷ ${a} = ${sgn(x)}`]}
+ else{q=`x ÷ ${a} = ${sgn(x)}`;steps=[`Undo the ÷ ${a} by multiplying both sides by ${a}.`,`x = ${sgn(x)} × ${a} = ${sgn(x*a)}`]}
+ return{q:`Solve for x:<span class="sub" style="font-size:36px;color:var(--ink);font-weight:700">${q}</span>`,kind:'num',ans:f==='div'?x*a:x,hintText:'Type the value of x',steps}},
+deal(L){let nA=pick([6,8,10,12]),nB=pick([15,18,20,24]);let uA=R(20,60),uB;do{uB=uA+pick([-1,1])*R(L===2?1:3,L===0?15:8)}while(uB<10||uB===uA);
+ const pA=round2(nA*uA/100),pB=round2(nB*uB/100),ans=uA<uB?'Pack A':'Pack B';
+ return{q:`Which is the better deal per pencil?<span class="sub">Pack A: ${nA} pencils for ${money(pA)} &nbsp;|&nbsp; Pack B: ${nB} pencils for ${money(pB)}</span>`,kind:'choice',choices:['Pack A','Pack B'],word:1,ans,
+ steps:[`Find the price of one pencil in each pack.`,`Pack A: ${money(pA)} ÷ ${nA} = about ${money(pA/nA)} each`,`Pack B: ${money(pB)} ÷ ${nB} = about ${money(pB/nB)} each`,`The lower price per pencil wins: ${ans}`]}}
+};
+
+/* ---------- kids and skills ---------- */
+const KIDS={
+ kavin:{name:'Kavin',grade:'Grade 6',color:'var(--kav)',focusMin:20,groups:[
+  ['Whole numbers',[['mul','Multiply multi-digit numbers'],['ldiv','Long division'],['ops','Order of operations']]],
+  ['Fractions and decimals',[['fadd','Add and subtract fractions'],['fmul','Multiply fractions'],['dec','Decimal operations']]],
+  ['Percents and money',[['pct','Percent of a number'],['tax','Sales tax at checkout'],['deal','Find the better deal']]],
+  ['Ratios',[['rate','Unit price and rates']]],
+  ['Integers and equations',[['ints','Positive and negative numbers'],['eq','One-step equations']]]]},
+ vaagai:{name:'Vaagai',grade:'Grade 4',color:'var(--vaa)',focusMin:15,groups:[
+  ['Adding and subtracting',[['add','Add big numbers'],['sub','Subtract with borrowing']]],
+  ['Multiplying and dividing',[['mulf','Multiplication facts'],['divf','Division facts']]],
+  ['Place value',[['place','Value of a digit'],['round','Rounding']]],
+  ['Fractions',[['fcomp','Compare fractions']]],
+  ['Money and time',[['change','Count your change'],['save','Saving for a goal'],['time','How much time passed']]]]}
+};
+const SKILLNAME={};Object.values(KIDS).forEach(k=>k.groups.forEach(g=>g[1].forEach(([id,n])=>SKILLNAME[id]=n)));
+
+/* ---------- storage (per viewer) ---------- */
+function load(kid){try{const v=localStorage.getItem('nn1:'+kid);return v?JSON.parse(v):{skills:{}}}catch(e){return{skills:{}}}}
+function save(kid,data){try{localStorage.setItem('nn1:'+kid,JSON.stringify(data))}catch(e){}}
+
+/* ---------- state ---------- */
+const app=document.getElementById('app'),whoEl=document.getElementById('who');
+let S={kid:null,data:null,skill:null,cur:null,locked:false,stat:null,focusStart:0,breakTimer:null};
+
+/* ---------- screens ---------- */
+function home(){
+ S.kid=null;S.focusStart=0;whoEl.textContent='';
+ const cards=Object.entries(KIDS).map(([id,k])=>{
+  const d=load(id),ids=k.groups.flatMap(g=>g[1].map(s=>s[0]));
+  const mastered=ids.filter(s=>(d.skills[s]?.s||0)>=100).length;
+  const answered=ids.reduce((t,s)=>t+(d.skills[s]?.n||0),0);
+  return `<button class="person" style="--c:${k.color}" data-kid="${id}" type="button">
+   <span class="nm">${k.name}</span>
+   <span class="meta">${k.grade} skills</span>
+   <span class="meta">${mastered} of ${ids.length} mastered · ${fmt(answered)} questions answered</span></button>`}).join('');
+ app.innerHTML=`<section class="hello"><h1>Who's practicing?</h1>
+  <p>Pick your name, choose a skill, and answer questions until your mastery reaches 100. Every wrong answer shows you how to solve it.</p></section>
+  <div class="people">${cards}</div>
+  <p class="parent-note">For parents: progress is saved on this device only. Kavin gets a break reminder every 20 minutes and Vaagai every 15, matching their focus plan.</p>`;
+ app.querySelectorAll('.person').forEach(b=>b.onclick=()=>skills(b.dataset.kid));
+}
+function skills(kid){
+ S.kid=kid;S.data=load(kid);const k=KIDS[kid];whoEl.textContent=k.name+' · '+k.grade;
+ if(!S.focusStart)S.focusStart=Date.now();
+ const groups=k.groups.map(([gname,list])=>`<div class="group"><h2>${gname}</h2>${list.map(([id,name])=>{
+  const r=S.data.skills[id]||{s:0,n:0};
+  return `<button class="skill" style="--c:${k.color}" data-sk="${id}" type="button">
+   <span><span class="t">${name}</span><br><span class="s">${r.n?r.n+' answered':'Not started'}</span></span>
+   <span class="mini" aria-hidden="true"><i style="width:${r.s}%"></i></span>
+   <span class="pct">${r.s>=100?'<span class="star" aria-label="mastered">★</span>':Math.round(r.s)}</span></button>`}).join('')}</div>`).join('');
+ app.innerHTML=`<div class="skills-head"><h1>${k.name}'s skills</h1>
+  <div><button class="link-btn" id="sw" type="button">Switch person</button> &nbsp; <button class="link-btn" id="rs" type="button">Reset progress</button></div></div>${groups}`;
+ document.getElementById('sw').onclick=home;
+ document.getElementById('rs').onclick=()=>{if(confirm(`Reset all of ${k.name}'s progress? This can't be undone.`)){S.data={skills:{}};save(kid,S.data);skills(kid)}};
+ app.querySelectorAll('.skill').forEach(b=>b.onclick=()=>practice(b.dataset.sk));
+}
+function practice(id){
+ S.skill=id;const r=S.data.skills[id]||(S.data.skills[id]={s:0,n:0,c:0});
+ S.stat={n:0,c:0,streak:0,t0:Date.now()};
+ app.innerHTML=`<div class="p-head"><h1>${SKILLNAME[id]}</h1><button class="icon-btn" id="done" type="button">Done practicing</button></div>
+ <div class="ruler-box"><div class="ruler-top"><span class="lbl">Mastery</span><span><span class="num" id="score">${Math.round(r.s)}</span><span class="delta" id="delta"></span></span></div>
+  <div class="ruler" role="img" id="rulerEl" aria-label="Mastery ${Math.round(r.s)} out of 100"><div class="fill" id="fill" style="width:${r.s}%"></div><div class="zone"></div><div class="ticks">${'<span></span>'.repeat(10)}</div></div>
+  <div class="ruler-scale"><span>0</span><span>50</span><span>90</span><span>100</span></div>
+  <div class="zone-note" id="zn"></div></div>
+ <div class="p-grid"><section class="qcard" id="qc" aria-live="polite"></section>
+  <aside class="side"><div class="stat"><span>Answered</span><b id="stN">0</b></div><div class="stat"><span>Correct in a row</span><b id="stS">0</b></div><div class="stat"><span>Time</span><b id="stT">0:00</b></div></aside></div>`;
+ document.getElementById('done').onclick=()=>skills(S.kid);
+ zoneNote();next();
+}
+function zoneNote(){const s=S.data.skills[S.skill].s;document.getElementById('zn').textContent=s>=90&&s<100?'Challenge zone: each wrong answer costs more here. Take your time.':s>=100?'Mastered!':''}
+function next(){
+ const r=S.data.skills[S.skill];S.cur=G[S.skill](lvl(r.s));S.locked=false;
+ const c=S.cur,qc=document.getElementById('qc');
+ let input;
+ if(c.kind==='choice')input=`<div class="ans-row">${c.choices.map(x=>`<button class="choice${c.word?' word':''}" data-v="${esc(x)}" type="button">${esc(x)}</button>`).join('')}</div>`;
+ else input=`<div class="ans-row">${c.kind==='money'?'<span style="font-size:26px;font-weight:700">$</span>':''}<input class="ans" id="ans" inputmode="${c.kind==='frac'||c.kind==='time'?'text':'decimal'}" autocomplete="off" aria-label="Your answer"><button class="go" id="go" type="button">Submit</button></div>`;
+ qc.innerHTML=`<div class="q${c.big?' big':''}">${c.q}</div>${input}<div class="hint" id="hint">${c.hintText||''}</div><div id="fb"></div>`;
+ if(c.kind==='choice')qc.querySelectorAll('.choice').forEach(b=>b.onclick=()=>check(b.dataset.v));
+ else{const a=document.getElementById('ans');a.focus();a.onkeydown=e=>{if(e.key==='Enter')check(a.value)};document.getElementById('go').onclick=()=>check(a.value)}
+}
+/* ---------- answer checking ---------- */
+function clean(s){return String(s).trim().replace(/[$,\s]+(?=\S)/g,m=>m.includes(' ')&&/\d\s+\d+\//.test(s)?' ':'').replace(/−/g,'-')}
+function parseFrac(s){s=s.trim().replace(/−/g,'-').replace(/\s+/g,' ');let m;
+ if(m=s.match(/^(-?\d+) (\d+)\/(\d+)$/)){const w=+m[1],n=+m[2],d=+m[3];if(!d)return null;return{n:(Math.abs(w)*d+n)*(w<0?-1:1),d,mixed:{n,d}}}
+ if(m=s.match(/^(-?\d+)\/(-?\d+)$/)){if(!+m[2])return null;return{n:+m[1],d:+m[2]}}
+ if(m=s.match(/^-?\d+$/))return{n:+s,d:1};return null}
+function judge(raw){const c=S.cur;
+ if(c.kind==='choice')return raw===c.ans?'ok':'bad';
+ if(!String(raw).trim())return 'empty';
+ if(c.kind==='frac'){const f=parseFrac(raw);if(!f)return 'format';
+  if(f.n*c.ans.d!==c.ans.n*f.d)return 'bad';
+  const simple=f.mixed?(gcd(f.mixed.n,f.mixed.d)===1&&f.mixed.n<f.mixed.d):gcd(f.n,f.d)===1&&f.d>0;
+  return simple?'ok':'simplify'}
+ if(c.kind==='time'){const m=String(raw).trim().match(/^(\d{1,2}):(\d{2})/);if(!m)return 'format';const [h,mm]=c.ans.split(':');return (+m[1]===+h&&m[2]===mm)?'ok':'bad'}
+ const v=Number(String(raw).replace(/[$,\s]/g,'').replace(/−/g,'-'));if(!isFinite(v)||/[^\d.\-$,\s−]/.test(raw))return 'format';
+ return Math.abs(v-c.ans)<0.005?'ok':'bad'}
+function check(raw){if(S.locked)return;const res=judge(raw),hint=document.getElementById('hint');
+ if(res==='empty'){hint.innerHTML='<span class="nudge">Type an answer first.</span>';return}
+ if(res==='format'){hint.innerHTML=`<span class="nudge">That doesn't look like ${S.cur.kind==='time'?'a time like 3:45':S.cur.kind==='frac'?'a fraction like 3/4':'a number'}. Try again.</span>`;document.getElementById('ans')?.classList.add('err');return}
+ if(res==='simplify'){hint.innerHTML='<span class="nudge">Right value. Now write it in simplest form.</span>';return}
+ S.locked=true;const r=S.data.skills[S.skill],before=r.s;
+ r.n++;S.stat.n++;
+ if(res==='ok'){r.c++;S.stat.c++;S.stat.streak++;r.s=Math.min(100,r.s+(r.s<50?10:r.s<75?7:r.s<90?4:2))}
+ else{S.stat.streak=0;r.s=Math.max(0,r.s-(r.s<50?4:r.s<90?6:10))}
+ save(S.kid,S.data);updateRuler(before,r.s);
+ const fb=document.getElementById('fb');
+ if(res==='ok'){
+  if(r.s>=100&&before<100){fb.innerHTML=`<div class="mastered"><div class="big">You mastered it!</div><p>${SKILLNAME[S.skill]} is complete. Pick a new skill or keep practicing.</p><button class="go" id="pickNew" type="button">Pick a new skill</button> <button class="icon-btn" id="keep" type="button">Keep practicing</button></div>`;
+   document.getElementById('pickNew').onclick=()=>skills(S.kid);document.getElementById('keep').onclick=next;return}
+  fb.innerHTML=`<div class="fb ok">${pick(['Correct!','Nice work!','Exactly right!','You got it!'])}</div>`;setTimeout(next,850)}
+ else{
+  const shown=S.cur.kind==='money'?money(S.cur.ans):S.cur.kind==='frac'?fstr(S.cur.ans.n,S.cur.ans.d):S.cur.kind==='num'?fmt(S.cur.ans):S.cur.ans;
+  fb.innerHTML=`<div class="fb bad"><h3>Not quite. Here's how to solve it.</h3><div class="correct">Answer: ${esc(shown)}</div><ol>${S.cur.steps.map(s=>`<li>${s}</li>`).join('')}</ol><button class="go" id="gotit" type="button">Got it, next question</button></div>`;
+  document.getElementById('gotit').focus();document.getElementById('gotit').onclick=next}
+ document.getElementById('stN').textContent=S.stat.n;document.getElementById('stS').textContent=S.stat.streak}
+function updateRuler(b,a){const d=Math.round(a)-Math.round(b);document.getElementById('score').textContent=Math.round(a);document.getElementById('fill').style.width=a+'%';
+ document.getElementById('rulerEl').setAttribute('aria-label',`Mastery ${Math.round(a)} out of 100`);
+ const de=document.getElementById('delta');de.textContent=d>0?'+'+d:d<0?String(d):'';de.className='delta '+(d>0?'up':d<0?'down':'');zoneNote()}
+
+/* ---------- timers: session clock and focus breaks ---------- */
+setInterval(()=>{
+ const tEl=document.getElementById('stT');if(tEl&&S.stat){const s=Math.floor((Date.now()-S.stat.t0)/1000);tEl.textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+ if(S.kid&&S.focusStart&&!S.breakTimer&&Date.now()-S.focusStart>=KIDS[S.kid].focusMin*60000)startBreak();
+},1000);
+function startBreak(){const ov=document.getElementById('breakOv'),k=KIDS[S.kid];let left=300;
+ document.getElementById('brkMsg').textContent=`${k.name}, you focused for ${k.focusMin} minutes. Stand up, stretch, and get some water.`;
+ ov.hidden=false;document.getElementById('brkDone').focus();
+ const tick=()=>{document.getElementById('brkCount').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');left--;if(left<0){clearInterval(S.breakTimer);document.getElementById('brkCount').textContent='Ready'}};
+ tick();S.breakTimer=setInterval(tick,1000)}
+document.getElementById('brkDone').onclick=()=>{clearInterval(S.breakTimer);S.breakTimer=null;S.focusStart=Date.now();document.getElementById('breakOv').hidden=true;document.getElementById('ans')?.focus()};
+
+/* ---------- theme ---------- */
+(function(){const root=document.documentElement;let t=null;try{t=localStorage.getItem('nn1:theme')}catch(e){}if(t)root.dataset.theme=t;
+ document.getElementById('themeBtn').onclick=()=>{const dark=root.dataset.theme?root.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;root.dataset.theme=dark?'light':'dark';try{localStorage.setItem('nn1:theme',root.dataset.theme)}catch(e){}}})();
+
+home();
+</script>
+</body>
+</html>
